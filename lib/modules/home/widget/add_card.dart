@@ -27,12 +27,25 @@ class AddCard extends StatelessWidget {
               key: homeCtrl.formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    controller: homeCtrl.editCtrl,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Title',
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 3.0.wp),
+                    child: TextFormField(
+                      controller: homeCtrl.editCtrl,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Title',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Please enter your task title";
+                        }
+                        return null;
+                      },
                     ),
+                  ),
+                  Wrap(
+                    spacing: 2.0.wp,
+                    children: icons.map((e) => null).toList(),
                   )
                 ],
               ),
