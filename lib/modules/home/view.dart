@@ -12,10 +12,14 @@ class HomePage extends GetView<HomeController> {
         body: SafeArea(
       child: ListView(
         children: [
-          Text(
-            "My list",
-            style: TextStyle(
-              fontSize: 24.0.sp,
+          Padding(
+            padding: EdgeInsets.all(4.0.wp),
+            child: Text(
+              "My list",
+              style: TextStyle(
+                fontSize: 24.0.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
