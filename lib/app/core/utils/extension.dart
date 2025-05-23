@@ -7,7 +7,7 @@ extension PercentSized on double {
 }
 
 extension ResponsiveText on double {
-  double get sp => Get.width / 100 * (this / 3);
+  double get sp => (Get.width / 100 * (this / 3));
 }
 
 extension HexColor on Color {
@@ -21,8 +21,8 @@ extension HexColor on Color {
 
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
   String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
-      '${(255 * a).toInt().toRadixString(16).padLeft(2, '0')}'
-      '${(255 * r).toInt().toRadixString(16).padLeft(2, '0')}'
-      '${(255 * g).toInt().toRadixString(16).padLeft(2, '0')}'
-      '${(255 * b).toInt().toRadixString(16).padLeft(2, '0')}';
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
 }
