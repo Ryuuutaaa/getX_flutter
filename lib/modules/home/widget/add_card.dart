@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_todolist/app/core/utils/extension.dart';
+import 'package:getx_todolist/app/data/models/task.dart';
 import 'package:getx_todolist/modules/home/controller.dart';
 import 'package:getx_todolist/widget/icons.dart';
 
@@ -75,7 +76,19 @@ class AddCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         minimumSize: const Size(150, 40)),
-                    onPressed: () {},
+                    onPressed: () {
+                      if (homeCtrl.formKey.currentState!.validate()) {
+                        int icon =
+                            icons[homeCtrl.chipIndex.value].icon!.codePoint;
+                        String color =
+                            icons[homeCtrl.chipIndex.value].color!.toHex();
+                        var task = Task(
+                          title: homeCtrl.editCtrl.text,
+                          icon: icon,
+                          color: color,
+                        );
+                      }
+                    },
                     child: Text(
                       "Confirm",
                       style: TextStyle(color: Colors.white),
