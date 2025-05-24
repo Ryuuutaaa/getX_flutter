@@ -45,8 +45,23 @@ class AddCard extends StatelessWidget {
                   ),
                   Wrap(
                     spacing: 2.0.wp,
-                    children: icons.map((e) => null).toList(),
-                  )
+                    children: List.generate(
+                      icons.length,
+                      (int index) {
+                        return Obx(
+                          () {
+                            return ChoiceChip(
+                              selected: homeCtrl.chipIndex.value == index,
+                              label: icons[index],
+                              onSelected: (bool selected) {
+                                homeCtrl.chipIndex.value = selected ? index : 0;
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
