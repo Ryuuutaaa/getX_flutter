@@ -103,6 +103,8 @@ class AddCard extends StatelessWidget {
               ),
             ),
           );
+          homeCtrl.editCtrl.clear();
+          homeCtrl.changeChipIndex(0);
         },
         child: DottedBorder(
           color: Colors.grey[400]!,
