@@ -19,7 +19,11 @@ class TaskCard extends StatelessWidget {
       margin: EdgeInsets.all(3.0.wp),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [],
+        boxShadow: [
+          color : Colors.grey[300]!, 
+          blurRadius : 7, 
+          offset : const Offset(0, 7)
+        ],
       ),
     );
   }
