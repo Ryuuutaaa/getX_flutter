@@ -5,13 +5,6 @@ import 'package:getx_todolist/app/data/models/task.dart';
 import 'package:getx_todolist/modules/home/controller.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:getx_todolist/app/core/utils/extension.dart';
-import 'package:getx_todolist/app/data/models/task.dart';
-import 'package:getx_todolist/modules/home/controller.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
-
 class TaskCard extends StatelessWidget {
   final HomeController homeCtrl = Get.find();
   final Task task;
@@ -64,23 +57,23 @@ class TaskCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // Progress indicator (circular or small bar)
-                Container(
+                // Progress indicator using StepProgressIndicator
+                SizedBox(
                   width: 12.0.wp,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  child: FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor:
-                        totalTasks > 0 ? completedTasks / totalTasks : 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                  child: StepProgressIndicator(
+                    totalSteps: 100,
+                    currentStep: task.todos?.length ?? 0,
+                    size: 8,
+                    padding: 0,
+                    selectedGradientColor: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [color.withOpacity(0.5), color],
+                    ),
+                    unselectedGradientColor: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Colors.white, Colors.white],
                     ),
                   ),
                 ),
