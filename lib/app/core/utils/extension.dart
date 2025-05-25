@@ -11,15 +11,20 @@ extension ResponsiveText on double {
 }
 
 extension HexColor on Color {
-  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  /// Mengonversi string warna HEX ke objek Color.
+  /// Mendukung format: "#RRGGBB", "RRGGBB", "AARRGGBB", "0xAARRGGBB"
   static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
+    hexString =
+        hexString.toUpperCase().replaceAll("#", "").replaceAll("0X", "");
+
+    if (hexString.length == 6) {
+      hexString = "FF$hexString"; // tambahkan alpha default jika belum ada
+    }
+
+    return Color(int.parse(hexString, radix: 16));
   }
 
-  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  /// Mengubah objek Color menjadi HEX string
   String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
       '${alpha.toRadixString(16).padLeft(2, '0')}'
       '${red.toRadixString(16).padLeft(2, '0')}'

@@ -5,6 +5,13 @@ import 'package:getx_todolist/app/data/models/task.dart';
 import 'package:getx_todolist/modules/home/controller.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getx_todolist/app/core/utils/extension.dart';
+import 'package:getx_todolist/app/data/models/task.dart';
+import 'package:getx_todolist/modules/home/controller.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
+
 class TaskCard extends StatelessWidget {
   final HomeController homeCtrl = Get.find();
   final Task task;
@@ -14,6 +21,12 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = HexColor.fromHex(task.color);
     final squareWidth = Get.width - 12.0.wp;
+    final completedTasks =
+        task.todos?.where((todo) => todo.done == true).length ?? 0;
+    final totalTasks = task.todos?.length ?? 0;
+    final progressPercentage =
+        totalTasks > 0 ? (completedTasks / totalTasks * 100).round() : 0;
+
     return Container(
       width: squareWidth / 2,
       height: squareWidth / 2,
@@ -22,73 +35,95 @@ class TaskCard extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey[300]!,
-            blurRadius: 7,
-            offset: const Offset(0, 7),
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
           ),
         ],
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 10.0.wp,
-            child: Row(
+      child: Padding(
+        padding: EdgeInsets.all(5.0.wp),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with icon and progress
+            Row(
               children: [
-                SizedBox(
-                  width: 25.0.wp,
-                  child: StepProgressIndicator(
-                    totalSteps: 100,
-                    currentStep: task.todos!.length,
-                    size: 8,
-                    padding: 0,
-                    selectedGradientColor: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [color.withOpacity(0.5), color],
-                    ),
-                    unselectedGradientColor: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Colors.white, Colors.white],
-                    ),
+                Container(
+                  padding: EdgeInsets.all(2.5.wp),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(6.0.wp),
                   child: Icon(
                     IconData(task.icon, fontFamily: 'MaterialIcons'),
                     color: color,
+                    size: 16.0.sp,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      task.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.0.wp,
+                const Spacer(),
+                // Progress indicator (circular or small bar)
+                Container(
+                  width: 12.0.wp,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor:
+                        totalTasks > 0 ? completedTasks / totalTasks : 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(2),
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    Text(
-                      '${task.todos!.length} Tasks',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    )
-                  ],
-                )
+                  ),
+                ),
               ],
             ),
-          ),
-          Text(
-            task.title,
-            style: TextStyle(fontSize: 12.0.sp),
-          ),
-        ],
+
+            SizedBox(height: 4.0.wp),
+
+            // Task title
+            Text(
+              task.title,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 12.0.sp,
+                color: Colors.black87,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+
+            const Spacer(),
+
+            // Task count at bottom
+            Row(
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  size: 12.0.sp,
+                  color: Colors.grey[600],
+                ),
+                SizedBox(width: 1.0.wp),
+                Text(
+                  '$completedTasks/$totalTasks Tasks',
+                  style: TextStyle(
+                    fontSize: 9.0.sp,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
