@@ -32,7 +32,19 @@ class HomePage extends GetView<HomeController> {
                 physics: const ClampingScrollPhysics(),
                 children: [
                   ...controller.tasks
-                      .map((element) => TaskCard(task: element))
+                      .map(
+                        (element) => LongPressDraggable(
+                          onDragStarted: () => controller.changeDeleting(true),
+                          onDraggableCanceled: (_, __) =>
+                              controller.changeDeleting(false),
+                          onDragEnd: (_) => controller.changeDeleting(false),
+                          feedback: Opacity(
+                            opacity: 0.8,
+                            child: TaskCard(task: element),
+                          ),
+                          child: TaskCard(task: element),
+                        ),
+                      )
                       .toList(),
                   AddCard(),
                 ],
@@ -40,6 +52,10 @@ class HomePage extends GetView<HomeController> {
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
       ),
     );
   }
