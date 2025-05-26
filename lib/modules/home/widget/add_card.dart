@@ -111,11 +111,14 @@ class AddCard extends StatelessWidget {
         child: DottedBorder(
           color: Colors.grey[400]!,
           dashPattern: const [8, 4],
-          child: Center(
-            child: Icon(
-              Icons.add,
-              size: 10.0.wp,
-              color: Colors.grey,
+          borderType: BorderType.RRect,
+          child: Container(
+            child: Center(
+              child: Icon(
+                Icons.add,
+                size: 10.0.wp,
+                color: Colors.grey,
+              ),
             ),
           ),
         ),

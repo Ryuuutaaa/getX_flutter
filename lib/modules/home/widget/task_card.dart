@@ -35,6 +35,12 @@ class TaskCard extends StatelessWidget {
           ),
         ],
         borderRadius: BorderRadius.circular(12),
+        border: Border(
+          top: BorderSide(
+            width: 3,
+            color: color,
+          ),
+        ),
       ),
       child: Padding(
         padding: EdgeInsets.all(5.0.wp),
@@ -121,3 +127,4 @@ class TaskCard extends StatelessWidget {
     );
   }
 }
+
