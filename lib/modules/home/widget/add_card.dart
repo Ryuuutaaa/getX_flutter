@@ -88,10 +88,12 @@ class AddCard extends StatelessWidget {
                           icon: icon,
                           color: color,
                         );
-                        Get.back();
-                        homeCtrl.addTask(task);
-                        EasyLoading.showSuccess('Create success');
-                        EasyLoading.showError('Duplicate Task');
+                        if (homeCtrl.addTask(task)) {
+                          Get.back();
+                          EasyLoading.showSuccess('Create success');
+                        } else {
+                          EasyLoading.showError('Duplicate Task');
+                        }
                       }
                     },
                     child: Text(

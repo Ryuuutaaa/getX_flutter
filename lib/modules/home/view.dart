@@ -12,32 +12,35 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      child: ListView(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(4.0.wp),
-            child: Text(
-              "My list",
-              style: TextStyle(
-                fontSize: 24.0.sp,
-                fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: ListView(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(4.0.wp),
+              child: Text(
+                "My list",
+                style: TextStyle(
+                  fontSize: 24.0.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            children: [
-              TaskCard(
-                task: Task(title: 'title', icon: 0xe59c, color: '#0xFF2B60E6'),
+            Obx(
+              () => GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const ClampingScrollPhysics(),
+                children: [
+                  ...controller.tasks
+                      .map((element) => TaskCard(task: element))
+                      .toList(),
+                  AddCard(),
+                ],
               ),
-              AddCard(),
-            ],
-          )
-        ],
+            )
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
