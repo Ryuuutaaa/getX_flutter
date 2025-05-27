@@ -35,6 +35,16 @@ class AddDialog extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.0.wp),
+            child: Text(
+              'New Task',
+              style: TextStyle(
+                fontSize: 20.0.wp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           )
         ],
       ),
