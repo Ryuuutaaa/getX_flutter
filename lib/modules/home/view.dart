@@ -4,6 +4,7 @@ import 'package:getx_todolist/app/data/models/task.dart';
 import 'package:getx_todolist/modules/home/controller.dart';
 import 'package:getx_todolist/app/core/utils/extension.dart';
 import 'package:getx_todolist/modules/home/widget/add_card.dart';
+import 'package:getx_todolist/modules/home/widget/add_dialog.dart';
 import 'package:getx_todolist/modules/home/widget/task_card.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -156,7 +157,7 @@ class HomePage extends GetView<HomeController> {
             ? const SizedBox.shrink() // Hide FAB when in delete mode
             : FloatingActionButton(
                 onPressed: () {
-                  // You can add functionality here if needed
+                  Get.to(() => AddDialog(), transition: Transition.downToUp);
                 },
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
