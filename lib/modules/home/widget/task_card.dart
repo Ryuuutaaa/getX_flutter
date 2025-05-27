@@ -17,8 +17,6 @@ class TaskCard extends StatelessWidget {
     final completedTasks =
         task.todos?.where((todo) => todo.done == true).length ?? 0;
     final totalTasks = task.todos?.length ?? 0;
-    final progressPercentage =
-        totalTasks > 0 ? (completedTasks / totalTasks * 100).round() : 0;
 
     return Container(
       width: squareWidth / 2,
@@ -63,12 +61,14 @@ class TaskCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // Progress indicator using StepProgressIndicator
+                // Progress indicator
                 SizedBox(
                   width: 12.0.wp,
                   child: StepProgressIndicator(
                     totalSteps: 100,
-                    currentStep: task.todos?.length ?? 0,
+                    currentStep: totalTasks > 0
+                        ? (completedTasks / totalTasks * 100).round()
+                        : 0,
                     size: 8,
                     padding: 0,
                     selectedGradientColor: LinearGradient(
@@ -127,4 +127,3 @@ class TaskCard extends StatelessWidget {
     );
   }
 }
-

@@ -96,7 +96,7 @@ class AddCard extends StatelessWidget {
                         }
                       }
                     },
-                    child: Text(
+                    child: const Text(
                       "Confirm",
                       style: TextStyle(color: Colors.white),
                     ),
