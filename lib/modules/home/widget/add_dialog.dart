@@ -22,6 +22,8 @@ class AddDialog extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Get.back();
+                      homeCtrl.editCtrl.clear();
+                      homeCtrl.changeTask(null);
                     },
                     icon: const Icon(Icons.close),
                   ),
