@@ -51,4 +51,6 @@ class HomeController extends GetxController {
   void deleteTask(Task task) {
     tasks.remove(task);
   }
+
+  updateTask(Task task, String text) {}
 }
