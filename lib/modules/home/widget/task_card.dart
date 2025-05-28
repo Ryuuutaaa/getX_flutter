@@ -15,7 +15,7 @@ class TaskCard extends StatelessWidget {
     final color = HexColor.fromHex(task.color);
     final squareWidth = Get.width - 12.0.wp;
     final completedTasks =
-        task.todos?.where((todo) => todo.done == true).length ?? 0;
+        task.todos?.where((todo) => todo['done'] == true).length ?? 0;
     final totalTasks = task.todos?.length ?? 0;
 
     return Container(
