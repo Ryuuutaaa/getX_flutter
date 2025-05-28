@@ -49,7 +49,23 @@ class AddDialog extends StatelessWidget {
                 ),
               ),
             ),
-            TextFormField(),
+            TextFormField(
+              controller: homeCtrl.editCtrl,
+              decoration: InputDecoration(
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[400]!,
+                  ),
+                ),
+              ),
+              autofocus: true,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your task title';
+                }
+                return null;
+              },
+            ),
           ],
         ),
       ),
