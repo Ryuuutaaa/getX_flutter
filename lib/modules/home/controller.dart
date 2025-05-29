@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -85,6 +86,23 @@ class HomeController extends GetxController {
       tasks[taskIndex] = updatedTask;
       tasks.refresh();
     }
+    return true;
+  }
+
+  bool addTodo(String title) {
+    var todo = {'title': title, 'done': false};
+
+    if (doingTodos
+        .any((element) => mapEquals<String, dynamic>(todo, element))) {
+      return false;
+    }
+
+    var doneTodo = {'title': title, 'done': true};
+    if (doneTodos
+        .any((element) => mapEquals<String, dynamic>(doneTodo, element))) {
+      return false;
+    }
+    doingTodos.add(todo);
     return true;
   }
 }
