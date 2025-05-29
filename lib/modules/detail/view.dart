@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_todolist/app/core/utils/extension.dart';
-import 'package:getx_todolist/modules/home/controller.dart';
 import 'package:getx_todolist/app/data/models/task.dart';
+import 'package:getx_todolist/modules/home/controller.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class DetailPage extends StatelessWidget {
-  final homeCtrl = Get.find<HomeController>();
+  final HomeController homeCtrl = Get.find();
 
-  DetailPage({super.key});
+  DetailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +42,7 @@ class DetailPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 8.0.wp,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 8.0.wp),
             child: Row(
               children: [
                 Icon(
@@ -53,41 +52,65 @@ class DetailPage extends StatelessWidget {
                   ),
                   color: color,
                 ),
-                SizedBox(
-                  width: 3.0.wp,
-                ),
+                SizedBox(width: 3.0.wp),
                 Text(
                   task.title,
                   style: TextStyle(
                     fontSize: 12.0.sp,
                     fontWeight: FontWeight.bold,
                   ),
-                )
+                ),
               ],
             ),
           ),
-          Obx(() {
-            var totalTodos =
-                homeCtrl.doingTodos.length + homeCtrl.doneTodos.length;
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 16.0.wp,
-                top: 3.0.wp,
-                right: 16.0.wp,
-              ),
-              child: Row(
+          Padding(
+            padding: EdgeInsets.only(
+              left: 16.0.wp,
+              top: 3.0.wp,
+              right: 16.0.wp,
+            ),
+            child: Obx(
+              () => Row(
                 children: [
                   Text(
-                    '$totalTodos Task',
+                    '${homeCtrl.doingTodos.length + homeCtrl.doneTodos.length} Task',
                     style: TextStyle(
                       fontSize: 12.0.sp,
                       color: Colors.grey,
                     ),
                   ),
+                  SizedBox(width: 3.0.wp),
+                  Expanded(
+                    child: StepProgressIndicator(
+                      totalSteps: (homeCtrl.doingTodos.length +
+                              homeCtrl.doneTodos.length)
+                          .clamp(1, double.infinity)
+                          .toInt(),
+                      currentStep: homeCtrl.doneTodos.length,
+                      size: 5,
+                      padding: 0,
+                      selectedGradientColor: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          color.withOpacity(0.5),
+                          color,
+                        ],
+                      ),
+                      unselectedGradientColor: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.grey[300]!,
+                          Colors.grey[300]!,
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            );
-          })
+            ),
+          ),
         ],
       ),
     );
