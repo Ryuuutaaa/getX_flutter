@@ -40,23 +40,31 @@ class DetailPage extends StatelessWidget {
               ],
             ),
           ),
-          Row(
-            children: [
-              Icon(
-                IconData(
-                  task.icon,
-                  fontFamily: 'MaterialIcons',
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 8.0.wp,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  IconData(
+                    task.icon,
+                    fontFamily: 'MaterialIcons',
+                  ),
+                  color: color,
                 ),
-                color: color,
-              ),
-              Text(
-                task.title,
-                style: TextStyle(
-                  fontSize: 12.0.sp,
-                  fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: 3.0.wp,
                 ),
-              )
-            ],
+                Text(
+                  task.title,
+                  style: TextStyle(
+                    fontSize: 12.0.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ],
+            ),
           ),
           // Tambahkan isi detail lainnya di sini
         ],
