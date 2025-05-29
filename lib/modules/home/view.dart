@@ -157,7 +157,11 @@ class HomePage extends GetView<HomeController> {
             ? const SizedBox.shrink() // Hide FAB when in delete mode
             : FloatingActionButton(
                 onPressed: () {
-                  Get.to(() => AddDialog(), transition: Transition.downToUp);
+                  if (controller.tasks.isNotEmpty) {
+                    Get.to(() => AddDialog(), transition: Transition.downToUp);
+                  } else {
+                    EasyLoading.showInfo("Please create you task type");
+                  }
                 },
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
