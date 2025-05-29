@@ -105,4 +105,22 @@ class HomeController extends GetxController {
     doingTodos.add(todo);
     return true;
   }
+
+  void updateTodos() {
+    var newTodos = <Map<String, dynamic>>[];
+    newTodos.addAll(
+      [
+        ...doingTodos,
+        ...doneTodos,
+      ],
+    );
+    var newTask = task.value!.copyWith(todos: newTodos);
+    int oldIdx = tasks.indexOf(task);
+    tasks[oldIdx] = newTask;
+    tasks.refresh();
+  }
+
+  void doneTodo(String todo) {}
+
+  void deleteTodo(String todo) {}
 }

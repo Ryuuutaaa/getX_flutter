@@ -27,6 +27,7 @@ class DetailPage extends StatelessWidget {
 
     return Scaffold(
       body: Form(
+        key: homeCtrl.formKey, // ✅ ADD THIS
         child: ListView(
           children: [
             Padding(
@@ -36,7 +37,9 @@ class DetailPage extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Get.back();
+                      homeCtrl.updateTodos();
                       homeCtrl.changeTask(null);
+                      homeCtrl.editCtrl.clear();
                     },
                     icon: Icon(Icons.arrow_back),
                   )
@@ -122,6 +125,7 @@ class DetailPage extends StatelessWidget {
                 controller: homeCtrl.editCtrl,
                 autofocus: true,
                 decoration: InputDecoration(
+                  hintText: 'Add new todo...',
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.grey[400]!,
@@ -132,14 +136,18 @@ class DetailPage extends StatelessWidget {
                   ),
                   suffixIcon: IconButton(
                     onPressed: () {
+                      // ✅ Validate Form
                       if (homeCtrl.formKey.currentState!.validate()) {
-                        var success = homeCtrl.addTodo(homeCtrl.editCtrl.text);
+                        bool success = homeCtrl.addTodo(
+                          homeCtrl.editCtrl.text.trim(),
+                        );
                         if (success) {
-                          EasyLoading.showSuccess("Todo item add success");
+                          EasyLoading.showSuccess(
+                              "Todo item added successfully");
+                          homeCtrl.editCtrl.clear();
                         } else {
-                          EasyLoading.showError("Todo item is already exist");
+                          EasyLoading.showError("Todo item already exists");
                         }
-                        homeCtrl.editCtrl.clear();
                       }
                     },
                     icon: Icon(Icons.done),
