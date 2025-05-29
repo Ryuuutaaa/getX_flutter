@@ -66,7 +66,28 @@ class DetailPage extends StatelessWidget {
               ],
             ),
           ),
-          // Tambahkan isi detail lainnya di sini
+          Obx(() {
+            var totalTodos =
+                homeCtrl.doingTodos.length + homeCtrl.doneTodos.length;
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16.0.wp,
+                top: 3.0.wp,
+                right: 16.0.wp,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    '$totalTodos Task',
+                    style: TextStyle(
+                      fontSize: 12.0.sp,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          })
         ],
       ),
     );
