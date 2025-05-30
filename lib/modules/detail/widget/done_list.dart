@@ -15,27 +15,47 @@ class DoneList extends StatelessWidget {
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
               children: [
-                  Text(
-                    'Completed (${homeCtrl.doneTodos.length})',
-                    style: TextStyle(
-                      fontSize: 14.0.wp,
-                      color: Colors.grey,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 2.0.wp,
+                      vertical: 5.0.wp,
+                    ),
+                    child: Text(
+                      'Completed (${homeCtrl.doneTodos.length})',
+                      style: TextStyle(
+                        fontSize: 14.0.sp,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
-                  ...homeCtrl.doneTodos.map((element) => Row(
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Icon(Icons.done),
-                          ),
-                          Text(
-                            element['title'],
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                decoration: TextDecoration.lineThrough),
-                          ),
-                        ],
+                  ...homeCtrl.doneTodos.map((element) => Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 3.0.wp,
+                          vertical: 9.0.wp,
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Icon(
+                                Icons.done,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.0.wp,
+                              ),
+                              child: Text(
+                                element['title'],
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    decoration: TextDecoration.lineThrough),
+                              ),
+                            ),
+                          ],
+                        ),
                       ))
                 ])
           : Container(),
