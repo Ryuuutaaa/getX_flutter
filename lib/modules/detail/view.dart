@@ -29,7 +29,7 @@ class DetailPage extends StatelessWidget {
 
     return Scaffold(
       body: Form(
-        key: homeCtrl.formKey, // ✅ ADD THIS
+        key: homeCtrl.formKey, 
         child: ListView(
           children: [
             Padding(
