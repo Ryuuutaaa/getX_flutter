@@ -29,7 +29,7 @@ class DetailPage extends StatelessWidget {
 
     return Scaffold(
       body: Form(
-        key: homeCtrl.formKey, 
+        key: homeCtrl.formKey,
         child: ListView(
           children: [
             Padding(
@@ -164,6 +164,7 @@ class DetailPage extends StatelessWidget {
               ),
             ),
             DoingList(),
+            DoneList(),
           ],
         ),
       ),
