@@ -137,4 +137,6 @@ class HomeController extends GetxController {
   }
 
   void deleteTodo(String todo) {}
+
+  Widget deleteDoneTodo(element) {}
 }
