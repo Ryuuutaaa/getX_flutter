@@ -39,46 +39,47 @@ class DoingList extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
+        return ListView(
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
-          itemCount: doingTodos.length,
-          itemBuilder: (context, index) {
-            final todo = doingTodos[index];
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 2.0.wp,
-                horizontal: 5.0.wp,
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Checkbox(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      value: todo['done'],
-                      onChanged: (value) {
-                        homeCtrl.doneTodo(todo['title']);
-                      },
+          children: [
+            ...doingTodos
+                .map(
+                  (todo) => Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 2.0.wp,
+                      horizontal: 5.0.wp,
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Checkbox(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            value: todo['done'],
+                            onChanged: (value) {
+                              homeCtrl.doneTodo(todo['title']);
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 4.0.wp),
+                        Expanded(
+                          child: Text(
+                            todo['title'],
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12.0.sp),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 4.0.wp),
-                  Expanded(
-                    child: Text(
-                      todo['title'],
-                      style: TextStyle(
-                        fontSize: 12.0.sp,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+                )
+                .toList(),
+            if (homeCtrl.doingTodos.isNotEmpty) const Divider(thickness: 2),
+          ],
         );
       },
     );
