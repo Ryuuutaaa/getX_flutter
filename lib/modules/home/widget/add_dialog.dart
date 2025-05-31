@@ -447,9 +447,13 @@ class _AddDialogState extends State<AddDialog>
               duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? taskColor.withOpacity(0.1)
+                    ? taskColor.withOpacity(
+                        0.15) // Slightly more opaque for better visibility
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
+                border: isSelected
+                    ? Border.all(color: taskColor.withOpacity(0.3), width: 1)
+                    : null,
               ),
               child: InkWell(
                 onTap: _isLoading
@@ -470,12 +474,17 @@ class _AddDialogState extends State<AddDialog>
                       Container(
                         padding: EdgeInsets.all(2.0.wp),
                         decoration: BoxDecoration(
-                          color: taskColor.withOpacity(0.2),
+                          color: isSelected
+                              ? taskColor.withOpacity(
+                                  0.3) // Darker icon background when selected
+                              : taskColor.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           IconData(task.icon, fontFamily: 'MaterialIcons'),
-                          color: taskColor,
+                          color: isSelected
+                              ? taskColor // Full color when selected
+                              : taskColor.withOpacity(0.8),
                           size: 16,
                         ),
                       ),
@@ -501,7 +510,9 @@ class _AddDialogState extends State<AddDialog>
                                 '$completedTodos/$totalTodos todos completed',
                                 style: TextStyle(
                                   fontSize: 10.0.sp,
-                                  color: Colors.grey[600],
+                                  color: isSelected
+                                      ? taskColor.withOpacity(0.7)
+                                      : Colors.grey[600],
                                 ),
                               ),
                             ],
@@ -510,19 +521,15 @@ class _AddDialogState extends State<AddDialog>
                       ),
 
                       // Selection indicator
-                      AnimatedScale(
-                        scale: isSelected ? 1.0 : 0.0,
+                      AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        child: Container(
-                          padding: EdgeInsets.all(1.0.wp),
-                          decoration: BoxDecoration(
-                            color: taskColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 16,
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected ? taskColor : Colors.grey[300]!,
+                            width: isSelected ? 6 : 2,
                           ),
                         ),
                       ),
