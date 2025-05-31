@@ -9,23 +9,22 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 class TaskCard extends StatelessWidget {
   final HomeController homeCtrl = Get.find();
   final Task task;
+
   TaskCard({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
     final color = HexColor.fromHex(task.color);
     final squareWidth = Get.width - 12.0.wp;
-    final completedTasks =
-        task.todos?.where((todo) => todo['done'] == true).length ?? 0;
+    final completedTasks = homeCtrl.getDoneTodo(task);
     final totalTasks = task.todos?.length ?? 0;
+    final hasValidTodos = totalTasks > 0;
 
     return GestureDetector(
       onTap: () {
         homeCtrl.changeTask(task);
         homeCtrl.changeTodos(task.todos ?? []);
-        Get.to(
-          DetailPage(),
-        );
+        Get.to(() => DetailPage());
       },
       child: Container(
         width: squareWidth / 2,
@@ -70,58 +69,73 @@ class TaskCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Progress indicator
-                  SizedBox(
-                    width: 12.0.wp,
-                    child: StepProgressIndicator(
-                      totalSteps: 100,
-                      currentStep: totalTasks > 0
-                          ? (completedTasks / totalTasks * 100).round()
-                          : 0,
-                      size: 8,
-                      padding: 0,
-                      selectedGradientColor: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [color.withOpacity(0.5), color],
+                  // Progress indicator - only show if there are valid todos
+                  if (hasValidTodos)
+                    SizedBox(
+                      width: 12.0.wp,
+                      child: StepProgressIndicator(
+                        totalSteps: totalTasks,
+                        currentStep: completedTasks,
+                        size: 5,
+                        padding: 0,
+                        selectedGradientColor: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [color.withOpacity(0.5), color],
+                        ),
+                        unselectedGradientColor: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Colors.white, Colors.white],
+                        ),
                       ),
-                      unselectedGradientColor: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Colors.white, Colors.white],
+                    )
+                  else
+                    // Show empty state indicator when no todos
+                    Container(
+                      width: 12.0.wp,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(2.5),
                       ),
                     ),
-                  ),
                 ],
               ),
 
               SizedBox(height: 4.0.wp),
 
               // Task title
-              Text(
-                task.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.0.sp,
-                  color: Colors.black87,
+              Expanded(
+                child: Text(
+                  task.title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.0.sp,
+                    color: Colors.black87,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
               ),
 
-              const Spacer(),
+              SizedBox(height: 2.0.wp),
 
               // Task count at bottom
               Row(
                 children: [
                   Icon(
-                    Icons.check_circle_outline,
+                    hasValidTodos
+                        ? Icons.check_circle_outline
+                        : Icons.add_circle_outline,
                     size: 12.0.sp,
                     color: Colors.grey[600],
                   ),
                   SizedBox(width: 1.0.wp),
                   Text(
-                    '$completedTasks/$totalTasks Tasks',
+                    hasValidTodos
+                        ? '$completedTasks/$totalTasks Tasks'
+                        : 'No tasks yet',
                     style: TextStyle(
                       fontSize: 9.0.sp,
                       color: Colors.grey[600],
