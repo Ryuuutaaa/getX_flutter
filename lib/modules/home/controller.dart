@@ -332,13 +332,23 @@ class HomeController extends GetxController {
   }
 
   int getTotalTask() {
+    return tasks.fold<int>(
+      0,
+      (previousValue, task) => previousValue + (task.todos?.length ?? 0),
+    );
+  }
+
+  int getTotalDoneTask() {
     var res = 0;
-    for (int i = 0; i < tasks.length; i++) {
-      if (tasks[i].todos != null) {
-        res += tasks[i].todos!.length;
+    for (var task in tasks) {
+      if (task.todos != null) {
+        for (var todo in task.todos!) {
+          if (todo is Map<String, dynamic> && todo['done'] == true) {
+            res++;
+          }
+        }
       }
     }
-
     return res;
   }
 }
