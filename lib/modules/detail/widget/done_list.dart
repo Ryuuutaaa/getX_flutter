@@ -92,13 +92,33 @@ class DoneList extends StatelessWidget {
   }
 
   Widget _buildDoneTodoItem(Map<String, dynamic> todo) {
+    // Generate unique key using id or title + timestamp
+    final uniqueKey = Key(
+        '${todo['id'] ?? todo['title']}_${DateTime.now().millisecondsSinceEpoch}');
+
     return Dismissible(
-      key: ValueKey(todo['id'] ?? todo['title']),
-      direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => _showDeleteConfirmation(),
-      onDismissed: (_) => homeCtrl.deleteDoneTodo(todo),
-      background: _buildDismissibleBackground(),
-      secondaryBackground: _buildRestoreBackground(),
+      key: uniqueKey,
+      direction: DismissDirection.horizontal, // Allow both directions
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          // Delete action
+          return await _showDeleteConfirmation();
+        } else if (direction == DismissDirection.startToEnd) {
+          // Restore action
+          homeCtrl.uncompleteTodo(todo);
+          return true;
+        }
+        return false;
+      },
+      onDismissed: (direction) {
+        if (direction == DismissDirection.endToStart) {
+          // Delete the todo
+          homeCtrl.deleteDoneTodo(todo);
+        }
+        // Note: restore is handled in confirmDismiss
+      },
+      background: _buildRestoreBackground(),
+      secondaryBackground: _buildDismissibleBackground(),
       child: InkWell(
         onTap: () => _showTodoOptions(todo),
         child: Container(
@@ -157,16 +177,19 @@ class DoneList extends StatelessWidget {
               leading: const Icon(Icons.undo),
               title: const Text('Mark as incomplete'),
               onTap: () {
-                homeCtrl.uncompleteTodo(todo);
                 Get.back();
+                homeCtrl.uncompleteTodo(todo);
               },
             ),
             ListTile(
               leading: const Icon(Icons.delete, color: Colors.red),
               title: const Text('Delete', style: TextStyle(color: Colors.red)),
-              onTap: () {
+              onTap: () async {
                 Get.back();
-                homeCtrl.deleteDoneTodo(todo);
+                final shouldDelete = await _showDeleteConfirmation();
+                if (shouldDelete) {
+                  homeCtrl.deleteDoneTodo(todo);
+                }
               },
             ),
           ],
@@ -259,7 +282,7 @@ class DoneList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            todo['title'],
+            todo['title'] ?? '',
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12.0.sp,

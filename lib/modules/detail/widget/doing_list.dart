@@ -94,8 +94,11 @@ class DoingList extends StatelessWidget {
   }
 
   Widget _buildTodoItem(Map<String, dynamic> todo) {
+    // Generate unique key using id or title + unique identifier
+    final uniqueKey = Key('${todo['id'] ?? todo['title']}_${todo.hashCode}');
+
     return Dismissible(
-      key: Key(todo['title']),
+      key: uniqueKey,
       background: Container(
         margin: EdgeInsets.symmetric(vertical: 0.5.wp),
         decoration: BoxDecoration(
@@ -104,32 +107,34 @@ class DoingList extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 6.0.wp),
-        child: Icon(
+        child: const Icon(
           Icons.delete,
           color: Colors.white,
         ),
       ),
       direction: DismissDirection.endToStart,
       confirmDismiss: (direction) async {
-        return await Get.dialog(
-          AlertDialog(
-            title: Text("Delete Task"),
-            content: Text("Are you sure you want to delete this task?"),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(result: false),
-                child: Text("Cancel"),
+        return await Get.dialog<bool>(
+              AlertDialog(
+                title: const Text("Delete Task"),
+                content:
+                    const Text("Are you sure you want to delete this task?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Get.back(result: false),
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () => Get.back(result: true),
+                    child: const Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () => Get.back(result: true),
-                child: Text(
-                  "Delete",
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ),
-        );
+            ) ??
+            false;
       },
       child: Material(
         color: Colors.transparent,
@@ -152,7 +157,7 @@ class DoingList extends StatelessWidget {
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.1),
                   blurRadius: 4,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -161,8 +166,8 @@ class DoingList extends StatelessWidget {
                 _buildCheckbox(todo),
                 SizedBox(width: 4.0.wp),
                 _buildTodoText(todo),
-                if (todo['done']) ...[
-                  Spacer(),
+                if (todo['done'] == true) ...[
+                  const Spacer(),
                   Icon(
                     Icons.check_circle,
                     size: 16.0.sp,
@@ -178,49 +183,52 @@ class DoingList extends StatelessWidget {
   }
 
   Widget _buildCheckbox(Map<String, dynamic> todo) {
-    return Container(
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: todo['done'] ? Colors.blue : Colors.grey[400]!,
-          width: 1.5,
+    final isDone = todo['done'] ?? false;
+
+    return GestureDetector(
+      onTap: () => homeCtrl.doneTodo(todo['title']),
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isDone ? Colors.blue : Colors.grey[400]!,
+            width: 1.5,
+          ),
+          color: isDone ? Colors.blue : Colors.transparent,
         ),
-      ),
-      child: Checkbox(
-        shape: CircleBorder(),
-        value: todo['done'],
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        onChanged: (value) => homeCtrl.doneTodo(todo['title']),
-        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected)) {
-            return Colors.blue;
-          }
-          return Colors.transparent;
-        }),
-        side: BorderSide.none,
+        child: isDone
+            ? const Icon(
+                Icons.check,
+                size: 16,
+                color: Colors.white,
+              )
+            : null,
       ),
     );
   }
 
   Widget _buildTodoText(Map<String, dynamic> todo) {
+    final isDone = todo['done'] ?? false;
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            todo['title'],
+            todo['title'] ?? '',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: TextStyle(
               fontSize: 12.0.sp,
               fontWeight: FontWeight.w500,
-              decoration: todo['done'] ? TextDecoration.lineThrough : null,
-              color: todo['done'] ? Colors.grey[500] : Colors.grey[800],
+              decoration: isDone ? TextDecoration.lineThrough : null,
+              color: isDone ? Colors.grey[500] : Colors.grey[800],
             ),
           ),
-          if (todo['description'] != null && todo['description'].isNotEmpty)
+          if (todo['description'] != null &&
+              todo['description'].toString().isNotEmpty)
             Padding(
               padding: EdgeInsets.only(top: 0.5.wp),
               child: Text(
@@ -230,6 +238,7 @@ class DoingList extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10.0.sp,
                   color: Colors.grey[500],
+                  decoration: isDone ? TextDecoration.lineThrough : null,
                 ),
               ),
             ),

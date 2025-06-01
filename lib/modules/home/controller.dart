@@ -12,6 +12,7 @@ class HomeController extends GetxController {
   // Form and UI state
   final formKey = GlobalKey<FormState>();
   final editCtrl = TextEditingController();
+  final tabIndex = 0.obs;
   final chipIndex = 0.obs;
   final deleting = false.obs;
 
@@ -32,6 +33,10 @@ class HomeController extends GetxController {
   void onClose() {
     editCtrl.dispose();
     super.onClose();
+  }
+
+  void changeTabIndex(int index) {
+    tabIndex.value = index;
   }
 
   // Private methods
@@ -324,5 +329,16 @@ class HomeController extends GetxController {
         colorText: Colors.white,
       );
     }
+  }
+
+  int getTotalTask() {
+    var res = 0;
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i].todos != null) {
+        res += tasks[i].todos!.length;
+      }
+    }
+
+    return res;
   }
 }
