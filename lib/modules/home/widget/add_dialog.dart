@@ -157,6 +157,7 @@ class _AddDialogState extends State<AddDialog>
   }
 
   void _handleCancel() {
+    if (_isLoading) return;
     HapticFeedback.lightImpact();
     homeCtrl.editCtrl.clear();
     homeCtrl.changeTask(null);
@@ -165,21 +166,28 @@ class _AddDialogState extends State<AddDialog>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Scaffold(
-              backgroundColor: Colors.white,
-              appBar: _buildAppBar(),
-              body: _buildBody(),
-            ),
-          ),
-        );
+    return WillPopScope(
+      onWillPop: () async {
+        if (_isLoading) return false;
+        _handleCancel();
+        return false;
       },
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                appBar: _buildAppBar(),
+                body: _buildBody(),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -447,8 +455,7 @@ class _AddDialogState extends State<AddDialog>
               duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? taskColor.withOpacity(
-                        0.15) // Slightly more opaque for better visibility
+                    ? taskColor.withOpacity(0.15)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
                 border: isSelected
@@ -475,15 +482,14 @@ class _AddDialogState extends State<AddDialog>
                         padding: EdgeInsets.all(2.0.wp),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? taskColor.withOpacity(
-                                  0.3) // Darker icon background when selected
+                              ? taskColor.withOpacity(0.3)
                               : taskColor.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           IconData(task.icon, fontFamily: 'MaterialIcons'),
                           color: isSelected
-                              ? taskColor // Full color when selected
+                              ? taskColor
                               : taskColor.withOpacity(0.8),
                           size: 16,
                         ),
