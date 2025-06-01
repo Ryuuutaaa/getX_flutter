@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_todolist/app/core/utils/extension.dart';
+import 'package:getx_todolist/app/core/values/colors.dart';
 import 'package:getx_todolist/modules/home/controller.dart';
 import 'package:intl/intl.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class ReportPage extends StatelessWidget {
   final homeCtrl = Get.find<HomeController>();
@@ -78,6 +80,27 @@ class ReportPage extends StatelessWidget {
                         'Precent',
                       ),
                     ],
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0.wp,
+                ),
+                UnconstrainedBox(
+                  child: SizedBox(
+                    width: 70.0.wp,
+                    height: 70.0.wp,
+                    child: CircularStepProgressIndicator(
+                      totalSteps: createdTasks == 0 ? 1 : createdTasks,
+                      currentStep: complatedTasks,
+                      stepSize: 20,
+                      selectedColor: green,
+                      unselectedColor: Colors.grey[200],
+                      padding: 0,
+                      width: 150,
+                      height: 150,
+                      selectedStepSize: 22,
+                      roundedCap: (_, __) => true,
+                    ),
                   ),
                 )
               ],
