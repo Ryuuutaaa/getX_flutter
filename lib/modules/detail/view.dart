@@ -71,6 +71,11 @@ class _DetailPageState extends State<DetailPage>
   }
 
   Future<bool> _handleWillPop() async {
+    // Mengembalikan false untuk mencegah pengguna keluar dari halaman
+    return false;
+
+    // Jika Anda ingin menggunakan logika sebelumnya, uncomment kode di bawah:
+    /*
     if (_hasUnsavedChanges) {
       final shouldPop = await _showUnsavedChangesDialog();
       if (shouldPop ?? false) {
@@ -81,6 +86,7 @@ class _DetailPageState extends State<DetailPage>
     }
     await _saveAndExit();
     return true;
+    */
   }
 
   Future<bool?> _showUnsavedChangesDialog() {
@@ -175,7 +181,7 @@ class _DetailPageState extends State<DetailPage>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _handleWillPop,
+      onWillPop: () async => false, // Mencegah pengguna keluar dari halaman
       child: Obx(() {
         final Task? task = homeCtrl.task.value;
 
@@ -195,6 +201,8 @@ class _DetailPageState extends State<DetailPage>
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         elevation: 0,
+        // Menghilangkan tombol back otomatis karena WillPopScope mencegah exit
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
@@ -224,7 +232,10 @@ class _DetailPageState extends State<DetailPage>
             ),
             SizedBox(height: 6.0.wp),
             ElevatedButton.icon(
-              onPressed: () => Get.back(),
+              onPressed: () {
+                // Karena WillPopScope mencegah exit, kita perlu force exit
+                Navigator.of(context).pop();
+              },
               icon: const Icon(Icons.arrow_back),
               label: const Text('Go Back'),
               style: ElevatedButton.styleFrom(
@@ -284,11 +295,12 @@ class _DetailPageState extends State<DetailPage>
       pinned: true,
       backgroundColor: color,
       foregroundColor: Colors.white,
+      // Menghilangkan tombol back otomatis
+      automaticallyImplyLeading: false,
       leading: IconButton(
-        onPressed: () async {
-          if (await _handleWillPop()) {
-            Get.back();
-          }
+        onPressed: () {
+          // Karena WillPopScope mencegah exit, kita perlu force exit
+          Navigator.of(context).pop();
         },
         icon: const Icon(Icons.arrow_back),
         tooltip: 'Back',

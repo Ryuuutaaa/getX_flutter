@@ -17,9 +17,13 @@ class ReportPage extends StatelessWidget {
         child: Obx(
           () {
             var createdTasks = homeCtrl.getTotalTask();
-            var complatedTasks = homeCtrl.getTotalDoneTask();
-            var liveTasks = createdTasks - complatedTasks;
-            var precent = (complatedTasks / createdTasks) * 100;
+            var completedTasks = homeCtrl.getTotalDoneTask();
+            var liveTasks = createdTasks - completedTasks;
+
+            // Handle pembagian dengan nol
+            var percent =
+                createdTasks == 0 ? 0.0 : (completedTasks / createdTasks) * 100;
+
             return ListView(
               children: [
                 Padding(
@@ -56,30 +60,35 @@ class ReportPage extends StatelessWidget {
                     horizontal: 3.0.wp,
                     vertical: 4.0.wp,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildStatus(
-                        Colors.green,
-                        liveTasks,
-                        'Live Tasks',
-                      ),
-                      _buildStatus(
-                        Colors.blue,
-                        createdTasks,
-                        'Created Tasks',
-                      ),
-                      _buildStatus(
-                        Colors.red,
-                        complatedTasks,
-                        'Completed Tasks',
-                      ),
-                      _buildStatus(
-                        Colors.red,
-                        precent.round(),
-                        'Precent',
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildStatus(
+                          Colors.green,
+                          liveTasks,
+                          'Live Tasks',
+                        ),
+                        SizedBox(width: 4.0.wp),
+                        _buildStatus(
+                          Colors.blue,
+                          createdTasks,
+                          'Created Tasks',
+                        ),
+                        SizedBox(width: 4.0.wp),
+                        _buildStatus(
+                          Colors.orange,
+                          completedTasks,
+                          'Completed Tasks',
+                        ),
+                        SizedBox(width: 4.0.wp),
+                        _buildStatus(
+                          Colors.purple,
+                          percent.round(),
+                          'Percent',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -91,7 +100,7 @@ class ReportPage extends StatelessWidget {
                     height: 70.0.wp,
                     child: CircularStepProgressIndicator(
                       totalSteps: createdTasks == 0 ? 1 : createdTasks,
-                      currentStep: complatedTasks,
+                      currentStep: completedTasks,
                       stepSize: 20,
                       selectedColor: green,
                       unselectedColor: Colors.grey[200],
@@ -100,6 +109,28 @@ class ReportPage extends StatelessWidget {
                       height: 150,
                       selectedStepSize: 22,
                       roundedCap: (_, __) => true,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${createdTasks == 0 ? 1 : percent}% ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0.sp,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 1.0.wp,
+                          ),
+                          Text(
+                            'Efficiency',
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.0.sp),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -111,47 +142,55 @@ class ReportPage extends StatelessWidget {
     );
   }
 
-  Row _buildStatus(Color color, int number, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 3.0.wp,
-          width: 3.0.wp,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              width: 0.5.wp,
-              color: color,
+  Widget _buildStatus(Color color, int number, String text) {
+    return Container(
+      constraints: BoxConstraints(minWidth: 20.0.wp),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 3.0.wp,
+            width: 3.0.wp,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 0.5.wp,
+                color: color,
+              ),
             ),
           ),
-        ),
-        SizedBox(
-          width: 3.0.wp,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$number',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0.sp,
-              ),
+          SizedBox(
+            width: 2.0.wp,
+          ),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$number',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0.sp,
+                  ),
+                ),
+                SizedBox(
+                  height: 2.0.wp,
+                ),
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 12.0.sp,
+                    color: Colors.grey,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                )
+              ],
             ),
-            SizedBox(
-              height: 2.0.wp,
-            ),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 12.0.sp,
-                color: Colors.grey,
-              ),
-            )
-          ],
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }
