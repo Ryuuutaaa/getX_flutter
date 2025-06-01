@@ -92,30 +92,25 @@ class DoneList extends StatelessWidget {
   }
 
   Widget _buildDoneTodoItem(Map<String, dynamic> todo) {
-    // Generate unique key using id or title + timestamp
-    final uniqueKey = Key(
-        '${todo['id'] ?? todo['title']}_${DateTime.now().millisecondsSinceEpoch}');
+    // Use a stable key based only on todo's unique identifier
+    final uniqueKey = Key('dismissible_${todo['id'] ?? todo['title']}');
 
     return Dismissible(
       key: uniqueKey,
-      direction: DismissDirection.horizontal, // Allow both directions
+      direction: DismissDirection.horizontal,
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
-          // Delete action
           return await _showDeleteConfirmation();
         } else if (direction == DismissDirection.startToEnd) {
-          // Restore action
           homeCtrl.uncompleteTodo(todo);
-          return true;
+          return false; // Return false since we already handled the action
         }
         return false;
       },
       onDismissed: (direction) {
         if (direction == DismissDirection.endToStart) {
-          // Delete the todo
           homeCtrl.deleteDoneTodo(todo);
         }
-        // Note: restore is handled in confirmDismiss
       },
       background: _buildRestoreBackground(),
       secondaryBackground: _buildDismissibleBackground(),

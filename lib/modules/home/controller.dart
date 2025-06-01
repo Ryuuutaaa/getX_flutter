@@ -351,4 +351,19 @@ class HomeController extends GetxController {
     }
     return res;
   }
+
+  // Tambahkan method ini di HomeController
+  void deleteDoingTodo(dynamic todoToDelete) {
+    if (todoToDelete is! Map<String, dynamic>) return;
+
+    final index = doingTodos.indexWhere((element) =>
+        element is Map<String, dynamic> &&
+        element['title'] == todoToDelete['title']);
+
+    if (index != -1) {
+      doingTodos.removeAt(index);
+      doingTodos.refresh();
+      updateTodos(); // Untuk update task yang terkait
+    }
+  }
 }
