@@ -24,7 +24,6 @@ class _DetailPageState extends State<DetailPage>
   late Animation<Offset> _slideAnimation;
 
   bool _isLoading = false;
-  bool _hasUnsavedChanges = false;
 
   @override
   void initState() {
@@ -70,56 +69,6 @@ class _DetailPageState extends State<DetailPage>
     });
   }
 
-  Future<bool> _handleWillPop() async {
-    // Mengembalikan false untuk mencegah pengguna keluar dari halaman
-    return false;
-
-    // Jika Anda ingin menggunakan logika sebelumnya, uncomment kode di bawah:
-    /*
-    if (_hasUnsavedChanges) {
-      final shouldPop = await _showUnsavedChangesDialog();
-      if (shouldPop ?? false) {
-        await _saveAndExit();
-        return true;
-      }
-      return false;
-    }
-    await _saveAndExit();
-    return true;
-    */
-  }
-
-  Future<bool?> _showUnsavedChangesDialog() {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Unsaved Changes'),
-        content: const Text(
-            'You have unsaved changes. Do you want to save before leaving?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Save & Exit'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _saveAndExit() async {
-    try {
-      homeCtrl.updateTodos();
-      homeCtrl.changeTask(null);
-      homeCtrl.editCtrl.clear();
-    } catch (e) {
-      debugPrint('Error saving todos: $e');
-    }
-  }
-
   Future<void> _handleAddTodo() async {
     if (_isLoading) return;
 
@@ -155,9 +104,7 @@ class _DetailPageState extends State<DetailPage>
           duration: const Duration(seconds: 1),
         );
         homeCtrl.editCtrl.clear();
-        setState(() {
-          _hasUnsavedChanges = true;
-        });
+        await _saveChanges();
       } else {
         await EasyLoading.showError(
           'Todo already exists',
@@ -178,10 +125,24 @@ class _DetailPageState extends State<DetailPage>
     }
   }
 
+  Future<void> _saveChanges() async {
+    try {
+      homeCtrl.updateTodos();
+      await EasyLoading.showSuccess('Changes saved!',
+          duration: const Duration(seconds: 1));
+    } on Exception catch (e) {
+      debugPrint('Error saving todos: $e');
+      await EasyLoading.showError('Failed to save changes');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false, // Mencegah pengguna keluar dari halaman
+      onWillPop: () async {
+        await _saveChanges();
+        return true;
+      },
       child: Obx(() {
         final Task? task = homeCtrl.task.value;
 
@@ -201,7 +162,6 @@ class _DetailPageState extends State<DetailPage>
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         elevation: 0,
-        // Menghilangkan tombol back otomatis karena WillPopScope mencegah exit
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -233,7 +193,6 @@ class _DetailPageState extends State<DetailPage>
             SizedBox(height: 6.0.wp),
             ElevatedButton.icon(
               onPressed: () {
-                // Karena WillPopScope mencegah exit, kita perlu force exit
                 Navigator.of(context).pop();
               },
               icon: const Icon(Icons.arrow_back),
@@ -295,35 +254,16 @@ class _DetailPageState extends State<DetailPage>
       pinned: true,
       backgroundColor: color,
       foregroundColor: Colors.white,
-      // Menghilangkan tombol back otomatis
       automaticallyImplyLeading: false,
       leading: IconButton(
-        onPressed: () {
-          // Karena WillPopScope mencegah exit, kita perlu force exit
+        onPressed: () async {
+          await _saveChanges();
           Navigator.of(context).pop();
         },
         icon: const Icon(Icons.arrow_back),
         tooltip: 'Back',
       ),
       actions: [
-        IconButton(
-          onPressed: _hasUnsavedChanges
-              ? () async {
-                  await _saveAndExit();
-                  setState(() {
-                    _hasUnsavedChanges = false;
-                  });
-                  EasyLoading.showSuccess('Changes saved!');
-                }
-              : null,
-          icon: Icon(
-            Icons.save,
-            color: _hasUnsavedChanges
-                ? Colors.white
-                : Colors.white.withOpacity(0.5),
-          ),
-          tooltip: 'Save Changes',
-        ),
         IconButton(
           onPressed: () => _showTaskInfo(task),
           icon: const Icon(Icons.info_outline),
@@ -649,7 +589,7 @@ class _DetailPageState extends State<DetailPage>
         DoingList(),
         SizedBox(height: 2.0.wp),
         DoneList(),
-        SizedBox(height: 20.0.wp), // Bottom padding for scroll
+        SizedBox(height: 20.0.wp),
       ],
     );
   }
