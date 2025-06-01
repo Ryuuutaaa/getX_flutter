@@ -95,8 +95,7 @@ class DoingList extends StatelessWidget {
 
   Widget _buildTodoItem(Map<String, dynamic> todo) {
     return Dismissible(
-      key: ValueKey(
-          todo['id'] ?? todo['title']), // Gunakan ValueKey dengan id atau title
+      key: ValueKey(todo['id'] ?? todo['title']),
       background: Container(
         margin: EdgeInsets.symmetric(vertical: 0.5.wp),
         decoration: BoxDecoration(
@@ -135,19 +134,18 @@ class DoingList extends StatelessWidget {
             false;
       },
       onDismissed: (direction) {
-        // Cek apakah todo ada di doing list
-        final inDoingList = homeCtrl.doingTodos.any((element) =>
-            element is Map<String, dynamic> &&
-            element['title'] == todo['title']);
-
-        if (inDoingList) {
-          homeCtrl.deleteDoneTodo(todo); // Tetap bisa digunakan
-          Get.snackbar(
-            "Task Deleted",
-            "Task '${todo['title']}' has been deleted",
-            snackPosition: SnackPosition.BOTTOM,
-          );
+        // Perbaikan: Panggil method yang tepat berdasarkan status task
+        if (todo['done'] == true) {
+          homeCtrl.deleteDoneTodo(todo);
+        } else {
+          homeCtrl.deleteDoingTodo(todo);
         }
+
+        Get.snackbar(
+          "Task Deleted",
+          "Task '${todo['title']}' has been deleted",
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       child: Material(
         color: Colors.transparent,
