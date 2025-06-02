@@ -13,228 +13,320 @@ class ReportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Obx(
-          () {
-            var createdTasks = homeCtrl.getTotalTask();
-            var completedTasks = homeCtrl.getTotalDoneTask();
-            var liveTasks = createdTasks - completedTasks;
-            var percent = (createdTasks == 0)
-                ? 0.0
-                : (completedTasks / createdTasks * 100);
+        child: Obx(() {
+          var createdTasks = homeCtrl.getTotalTask();
+          var completedTasks = homeCtrl.getTotalDoneTask();
+          var liveTasks = createdTasks - completedTasks;
+          var percent =
+              (createdTasks == 0) ? 0.0 : (completedTasks / createdTasks * 100);
 
-            return Padding(
-              padding: EdgeInsets.only(bottom: 2.0.wp),
-              child: Column(
-                children: [
-                  // Header Section
-                  Padding(
-                    padding: EdgeInsets.all(4.0.wp),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () => Get.back(),
-                        ),
-                        SizedBox(width: 2.0.wp),
-                        Text(
-                          'My Report',
-                          style: TextStyle(
-                            fontSize: 24.0.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+          return Column(
+            children: [
+              // Header Section
+              Padding(
+                padding: EdgeInsets.all(4.0.wp),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, size: 22.0.sp),
+                      onPressed: () => Get.back(),
+                      color: Colors.grey[800],
                     ),
-                  ),
-
-                  // Date Section
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0.wp),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        DateFormat.yMMMMd().format(DateTime.now()),
-                        style: TextStyle(
-                          fontSize: 14.0.sp,
-                          color: Colors.grey,
-                        ),
+                    SizedBox(width: 2.0.wp),
+                    Text(
+                      'Task Report',
+                      style: TextStyle(
+                        fontSize: 20.0.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
                       ),
                     ),
-                  ),
+                    const Spacer(),
+                    Container(
+                      padding: EdgeInsets.all(2.0.wp),
+                      decoration: BoxDecoration(
+                        color: blue.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.bar_chart_rounded,
+                        size: 20.0.sp,
+                        color: blue,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                  Divider(
-                    thickness: 1,
-                    color: Colors.grey[300],
-                    indent: 4.0.wp,
-                    endIndent: 4.0.wp,
-                  ),
+              Divider(height: 1, color: Colors.grey[200]),
 
-                  // Stats Cards Section
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 3.0.wp),
-                    child: SizedBox(
-                      height: 22.0.wp,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 4.0.wp),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 5.0.wp, vertical: 3.0.wp),
+                  child: Column(
+                    children: [
+                      // Date and Summary
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildStatCard(
-                            'Live Tasks',
-                            liveTasks.toString(),
-                            Colors.green,
-                            Icons.access_time_filled,
+                          Text(
+                            DateFormat('EEE, MMM d').format(DateTime.now()),
+                            style: TextStyle(
+                              fontSize: 12.0.sp,
+                              color: Colors.grey[600],
+                            ),
                           ),
-                          SizedBox(width: 4.0.wp),
-                          _buildStatCard(
-                            'Created',
-                            createdTasks.toString(),
-                            Colors.blue,
-                            Icons.add_task,
-                          ),
-                          SizedBox(width: 4.0.wp),
-                          _buildStatCard(
-                            'Completed',
-                            completedTasks.toString(),
-                            Colors.orange,
-                            Icons.check_circle,
-                          ),
-                          SizedBox(width: 4.0.wp),
-                          _buildStatCard(
-                            'Progress',
-                            '${percent.toStringAsFixed(1)}%',
-                            Colors.purple,
-                            Icons.trending_up,
+                          Text(
+                            '${percent.toStringAsFixed(0)}% Completed',
+                            style: TextStyle(
+                              fontSize: 12.0.sp,
+                              color: green,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
+                      SizedBox(height: 4.0.wp),
 
-                  // Progress Circle Section
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Your Progress',
-                          style: TextStyle(
-                            fontSize: 18.0.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[700],
+                      // Stats Cards
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.2,
+                        mainAxisSpacing: 3.0.wp,
+                        crossAxisSpacing: 3.0.wp,
+                        children: [
+                          _buildStatCard(
+                            title: 'Live Tasks',
+                            value: liveTasks.toString(),
+                            color: Colors.green,
+                            icon: Icons.access_time_outlined,
                           ),
+                          _buildStatCard(
+                            title: 'Created',
+                            value: createdTasks.toString(),
+                            color: Colors.blue,
+                            icon: Icons.add_task_outlined,
+                          ),
+                          _buildStatCard(
+                            title: 'Completed',
+                            value: completedTasks.toString(),
+                            color: Colors.orange,
+                            icon: Icons.check_circle_outline,
+                          ),
+                          _buildStatCard(
+                            title: 'Progress',
+                            value: '${percent.toStringAsFixed(1)}%',
+                            color: Colors.purple,
+                            icon: Icons.trending_up_outlined,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5.0.wp),
+
+                      // Progress Section
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(5.0.wp),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        SizedBox(height: 4.0.wp),
-                        UnconstrainedBox(
-                          child: SizedBox(
-                            width: 70.0.wp,
-                            height: 70.0.wp,
-                            child: CircularStepProgressIndicator(
-                              totalSteps: createdTasks == 0 ? 1 : createdTasks,
-                              currentStep: completedTasks,
-                              stepSize: 20,
-                              selectedColor: green,
-                              unselectedColor: Colors.grey[200],
-                              padding: 0,
-                              width: 150,
-                              height: 150,
-                              selectedStepSize: 22,
-                              roundedCap: (_, __) => true,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${percent.toStringAsFixed(1)}%',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24.0.sp,
-                                      color: green,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.0.wp),
-                                  Text(
-                                    'Efficiency',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11.0.sp, // Reduced from 12.0
-                                    ),
-                                  ),
-                                ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'PROGRESS OVERVIEW',
+                              style: TextStyle(
+                                fontSize: 12.0.sp,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ),
+                            SizedBox(height: 4.0.wp),
+                            Center(
+                              child: SizedBox(
+                                width: 65.0.wp,
+                                height: 65.0.wp,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircularStepProgressIndicator(
+                                      totalSteps:
+                                          createdTasks == 0 ? 1 : createdTasks,
+                                      currentStep: completedTasks,
+                                      stepSize: 20,
+                                      selectedColor: green,
+                                      unselectedColor: Colors.grey[200]!,
+                                      padding: 0,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      selectedStepSize: 22,
+                                      roundedCap: (_, __) => true,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${percent.toStringAsFixed(1)}%',
+                                          style: TextStyle(
+                                            fontSize: 24.0.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey[800],
+                                          ),
+                                        ),
+                                        Text(
+                                          'Efficiency',
+                                          style: TextStyle(
+                                            fontSize: 12.0.sp,
+                                            color: Colors.grey[500],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 4.0.wp),
+                            LinearProgressIndicator(
+                              value: percent / 100,
+                              backgroundColor: Colors.grey[200],
+                              valueColor: AlwaysStoppedAnimation<Color>(green),
+                              minHeight: 6,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            SizedBox(height: 2.0.wp),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Completed: ',
+                                  style: TextStyle(
+                                    fontSize: 11.0.sp,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  '$completedTasks/$createdTasks',
+                                  style: TextStyle(
+                                    fontSize: 11.0.sp,
+                                    color: green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 6.0.wp),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12.0.wp),
-                          child: LinearProgressIndicator(
-                            value: percent / 100,
-                            backgroundColor: Colors.grey[200],
-                            valueColor: AlwaysStoppedAnimation<Color>(green),
-                            minHeight: 8.0,
+                      ),
+                      SizedBox(height: 5.0.wp),
+
+                      // Productivity Tip
+                      if (percent < 70)
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(4.0.wp),
+                          decoration: BoxDecoration(
+                            color: Colors.orange[50],
                             borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.orange[100]!,
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.lightbulb_outline,
+                                color: Colors.orange,
+                                size: 18.0.sp,
+                              ),
+                              SizedBox(width: 3.0.wp),
+                              Expanded(
+                                child: Text(
+                                  'Try focusing on high-priority tasks first to improve your efficiency',
+                                  style: TextStyle(
+                                    fontSize: 11.0.sp,
+                                    color: Colors.orange[800],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 2.0.wp),
-                        Text(
-                          '${completedTasks} out of ${createdTasks} tasks completed',
-                          style: TextStyle(
-                            fontSize: 12.0.sp,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            );
-          },
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildStatCard(
-      String title, String value, Color color, IconData icon) {
-    return Container(
-      width: 32.0.wp, // Increased from 30.0.wp
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required Color color,
+    required IconData icon,
+  }) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
-      padding: EdgeInsets.all(3.0.wp),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 14.0.sp, color: color),
-              SizedBox(width: 2.0.wp),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 10.0.sp,
-                  color: Colors.grey[600],
+      child: Padding(
+        padding: EdgeInsets.all(4.0.wp),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(2.5.wp),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 14.0.sp,
+                    color: color,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 1.0.wp),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 15.0.sp, // Reduced from 16.0.sp
-              fontWeight: FontWeight.bold,
-              color: color,
+              ],
             ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 10.0.sp,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                SizedBox(height: 1.0.wp),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 18.0.sp,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
